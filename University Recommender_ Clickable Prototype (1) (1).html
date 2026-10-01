@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>University Recommender: Clickable Prototype</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Karla:wght@400;600&display=swap">
+<style>
+:root{--paper:#EEF2F6;--grid:#DCE3EA;--ink:#1F2A37;--line:#5B6B7B;--soft:#C9D3DD;--accent:#2F6FED;--accent-bg:#DDE8FD;--screen:#FFFFFF;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#141A21;--grid:#1D2530;--ink:#E6ECF2;--line:#8D9DAD;--soft:#33404D;--accent:#6E9BFF;--accent-bg:#1E2F52;--screen:#1B232C}}
+:root[data-theme="dark"]{--paper:#141A21;--grid:#1D2530;--ink:#E6ECF2;--line:#8D9DAD;--soft:#33404D;--accent:#6E9BFF;--accent-bg:#1E2F52;--screen:#1B232C}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;color:var(--ink);font-family:Karla,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.45}
+button{font:inherit;color:inherit;cursor:pointer;background:none}
+button:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wrap{max-width:560px;margin:0 auto;padding:24px 16px 40px}
+h1{font-family:"Patrick Hand","Comic Sans MS",cursive;font-weight:400;font-size:clamp(28px,6vw,38px);margin:0 0 4px}
+.lead{margin:0 0 14px;color:var(--line);font-size:14px}
+.tabs{display:flex;gap:8px;margin-bottom:10px}
+.tab{flex:1;border:2px solid var(--ink);border-radius:10px;padding:8px;font-weight:600;background:var(--screen)}
+.tab.on{background:var(--ink);color:var(--screen)}
+.steps{display:flex;gap:6px;overflow-x:auto;padding:2px 2px 10px}
+.step{flex:none;display:flex;gap:6px;align-items:center;border:1.5px solid var(--line);border-radius:20px;padding:3px 10px 3px 4px;font-size:12px;background:var(--screen);white-space:nowrap}
+.step b{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:11px}
+.step.on{border-color:var(--accent);background:var(--accent-bg);color:var(--accent);font-weight:600}
+.step.on b{border-color:var(--accent)}
+.frame{background:var(--screen);border:2px solid var(--ink);border-radius:12px;box-shadow:5px 5px 0 var(--soft);overflow:hidden}
+.bar{display:flex;gap:5px;align-items:center;padding:8px 10px;border-bottom:2px solid var(--ink)}
+.bar i{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--ink)}
+.bar b{flex:1;margin-left:6px;border:1.5px solid var(--soft);border-radius:6px;padding:1px 8px;font-size:11px;font-weight:400;color:var(--line);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+#scr{padding:18px;min-height:440px;display:flex;flex-direction:column;gap:11px;font-size:14px}
+.h{font-family:"Patrick Hand","Comic Sans MS",cursive;font-size:25px;line-height:1.15}
+.big{font-size:33px}
+.sub{color:var(--line);font-size:13px}
+label{font-size:13px;color:var(--line);margin-bottom:-6px}
+.field{width:100%;border:1.5px solid var(--line);border-radius:8px;padding:8px 10px;font:inherit;color:var(--ink);background:var(--screen)}
+.btn{border:2px solid var(--ink);border-radius:10px;padding:10px;text-align:center;font-weight:600;width:100%}
+.btn.on{background:var(--ink);color:var(--screen)}
+.push{margin-top:auto}
+.drop{border:2px dashed var(--line);border-radius:10px;padding:18px 8px;text-align:center;color:var(--line);width:100%}
+.drop.ok{border-style:solid;border-color:var(--accent);color:var(--accent);background:var(--accent-bg)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1.5px solid var(--line);border-radius:20px;padding:4px 11px;font-size:13px}
+.chip.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent);font-weight:600}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.dd{position:relative}
+.menu{position:absolute;left:0;right:0;top:calc(100% + 3px);z-index:3;background:var(--screen);border:2px solid var(--accent);border-radius:8px;overflow:hidden;box-shadow:3px 3px 0 var(--soft)}
+.menu:empty{display:none}
+.menu button{display:block;width:100%;text-align:left;padding:8px 10px;border-bottom:1.5px dotted var(--soft)}
+.menu button:hover,.menu button:focus-visible{background:var(--accent-bg);color:var(--accent)}
+.menu small{display:block;padding:4px 10px;font-size:11px;color:var(--line);background:var(--grid)}
+.uni{display:flex;justify-content:space-between;gap:10px;width:100%;text-align:left;border:1.5px solid var(--line);border-radius:10px;padding:9px 11px}
+.uni small{color:var(--line)}
+.uni>span{text-align:right;white-space:nowrap;color:var(--line);font-size:13px}
+.uni.top{border:2px solid var(--accent);background:var(--accent-bg)}
+.uni.dim{opacity:.55;border-style:dashed}
+.pick{border:2px solid var(--accent);background:var(--accent-bg);border-radius:12px;padding:12px}
+.tag{display:inline-block;font-size:12px;font-weight:600;color:var(--accent);border:1.5px solid var(--accent);border-radius:12px;padding:1px 9px;margin-bottom:6px}
+.kv{display:flex;justify-content:space-between;gap:12px;border-bottom:1.5px dotted var(--soft);padding:5px 0}
+.kv span:last-child{color:var(--line);text-align:right}
+.ok{color:var(--accent);font-weight:600}
+.bars{display:flex;align-items:center;gap:8px;font-size:13px}
+.bars span{width:150px;color:var(--line)}
+.bars i{display:block;height:9px;border-radius:5px;background:var(--accent)}
+.note{margin:12px 0 0;font-size:12px;color:var(--line)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>University Recommender: clickable prototype</h1>
+<p class="lead">Click through the website. Everything uses sample data, so try changing your grade, major and preferences.</p>
+<div class="tabs" id="tabs"></div>
+<div class="steps" id="steps"></div>
+<div class="frame"><div class="bar"><i></i><i></i><i></i><b id="url"></b></div><div id="scr"></div></div>
+<p class="note">Sample data only. The recommendation text is written by a simple template here; the real system would use generative AI.</p>
+</div>
+<script>
+const MAJORS=['Architecture','Business Administration','Civil Engineering','Computer Engineering','Computer Information Systems','Computer Science','Graphic Design','Medicine','Pharmacy'];
+const U=[
+{id:'A',name:'University A',type:'Public',km:12,fee:30000,min:75,dl:'June 30',majors:['Computer Science','Computer Engineering','Business Administration']},
+{id:'B',name:'University B',type:'Private',km:30,fee:180000,min:65,dl:'July 15',majors:['Computer Science','Computer Information Systems','Business Administration','Graphic Design']},
+{id:'C',name:'University C',type:'Public',km:85,fee:25000,min:85,dl:'June 20',majors:['Medicine','Pharmacy','Computer Science','Civil Engineering']},
+{id:'D',name:'University D',type:'Private',km:18,fee:350000,min:60,dl:'August 1',majors:['Business Administration','Graphic Design','Architecture']},
+{id:'E',name:'University E',type:'Public',km:45,fee:20000,min:70,dl:'July 5',majors:['Civil Engineering','Computer Engineering','Architecture']}];
+const ST=[['landing','Home'],['signup','Sign up'],['results','Grades'],['prefs','Preferences'],['matches','Matches'],['pick','Best match'],['detail','Details']];
+const AD=[['alogin','Login'],['aedit','Edit data'],['areview','Review'],['adone','Confirmed'],['adash','Dashboard']];
+const S={mode:'student',screen:'landing',grade:85,major:'',types:{Public:true,Private:true},km:100,fee:500000,top:null,up:false,applied:false,
+draft:{fee:U[0].fee,min:U[0].min,majors:[...U[0].majors]}};
+const $=id=>document.getElementById(id);
+const fmt=n=>'EGP '+Number(n).toLocaleString('en-US');
+function res(){
+ const m=S.major.trim().toLowerCase();
+ const has=u=>!!m&&u.majors.some(x=>x.toLowerCase()===m);
+ const ok=U.filter(u=>S.grade>=u.min&&S.types[u.type]&&u.km<=S.km&&u.fee<=S.fee).sort((a,b)=>a.km-b.km);
+ return {m,has,ok,withM:ok.filter(has),hidden:U.length-ok.length};
+}
+function pick(){const r=res();return r.m?r.withM[0]:r.ok[0]}
+const go=(k,t)=>`<button class="btn ${t||'on'} push" data-go="${k}">`;
+const V={
+landing:()=>`<div style="margin:auto 0;text-align:center"><div class="h big">Find the university that fits your grades</div><p class="sub">Private or public, close to home, within your budget.</p></div>${go('signup')}Get started</button>`,
+signup:()=>`<div class="h">Create your account</div><label>Full name</label><input class="field"><label>Email</label><input class="field" type="email"><label>Password</label><input class="field" type="password"><label>City or home address</label><input class="field">${go('results')}Sign up</button>`,
+results:()=>`<div class="h">Add your results</div><button class="drop ${S.up?'ok':''}" data-act="upload">${S.up?'certificate.pdf added (sample)':'Click to add your certificate or transcript'}</button><label>Or type your overall grade (%)</label><input class="field" type="number" min="0" max="100" data-in="grade" value="${S.grade}">${go('prefs')}Save results</button>`,
+prefs:()=>`<div class="h">What matters to you?</div><label>Major you want</label><div class="dd"><input class="field" data-in="major" value="${S.major}" placeholder="Type a major, for example Comp" autocomplete="off"><div class="menu" id="menu"></div></div>
+<label>University type</label><div class="chips"><button class="chip ${S.types.Public?'on':''}" data-type="Public">Public</button><button class="chip ${S.types.Private?'on':''}" data-type="Private">Private</button></div>
+<label>Maximum distance: <b id="kmv">${S.km} km</b></label><input type="range" min="5" max="100" step="5" value="${S.km}" data-in="km">
+<label>Yearly tuition budget: <b id="feev">${fmt(S.fee)}</b></label><input type="range" min="10000" max="500000" step="10000" value="${S.fee}" data-in="fee">${go('matches')}Show my matches</button>`,
+matches:()=>{const r=res(),best=pick();
+ const list=r.m?[...r.withM,...r.ok.filter(u=>!r.has(u))]:r.ok;
+ const rows=list.map(u=>`<button class="uni ${r.m&&!r.has(u)?'dim':''} ${u===best?'top':''}" data-uni="${u.id}"><div><b>${u.name}</b><br><small>${u.type}${r.m?(r.has(u)?', offers your major':', does not offer your major'):''}</small></div><span>${u.km} km<br>${fmt(u.fee)}/yr</span></button>`).join('');
+ return `<div class="h">${r.m?'Universities with your major':'Universities you qualify for'}</div>${rows||'<p class="sub">No university matches. Go back and loosen the distance, budget or type.</p>'}<p class="sub">${r.hidden} hidden by your grade, type, distance or budget.</p>${go('pick')}Ask the AI to recommend</button>`},
+pick:()=>{const u=pick(),r=res();
+ if(!u)return `<div class="h">No match yet</div><p class="sub">Nothing fits your grade and preferences. Change them and try again.</p>${go('prefs')}Change preferences</button>`;
+ S.top=u.id;
+ const why=`${u.name} accepts your ${S.grade}% (it needs ${u.min}%)${r.has(u)?`, offers ${S.major}`:''}, is ${u.km} km away and costs ${fmt(u.fee)} per year. It is the closest of your ${r.m?'matches that offer your major':'matches'}.`;
+ return `<div class="h">Your best match</div><div class="pick"><span class="tag">AI recommendation</span><div class="h">${u.name}</div><p style="margin:6px 0 0">${why}</p></div>${r.m?`<div class="kv"><span>Your major</span><span class="ok">Offered</span></div>`:''}<div class="kv"><span>Distance</span><span>${u.km} km</span></div><div class="kv"><span>Tuition</span><span>${fmt(u.fee)} per year</span></div>${go('matches','')}Compare with the others</button>${go('detail')}See details</button>`},
+detail:()=>{const u=U.find(x=>x.id===S.top)||U[0],r=res();
+ return `<div class="h">${u.name}</div><div class="kv"><span>Type</span><span>${u.type}</span></div><div class="kv"><span>Majors</span><span>${u.majors.join(', ')}</span></div>${r.m?`<div class="kv"><span>Your major</span><span class="${r.has(u)?'ok':''}">${r.has(u)?'Offered':'Not offered'}</span></div>`:''}<div class="kv"><span>Entry grade</span><span>${u.min}%</span></div><div class="kv"><span>Tuition</span><span>${fmt(u.fee)} per year</span></div><div class="kv"><span>Distance</span><span>${u.km} km</span></div><div class="kv"><span>Deadline</span><span>${u.dl}</span></div>${S.applied?'<p class="ok">Sample only: the real site would open the application here.</p>':''}<button class="btn on push" data-act="apply">Start application</button>`},
+alogin:()=>`<div class="h" style="margin-top:30px">University staff login</div><p class="sub">Only approved university staff get in.</p><label>Work email</label><input class="field" type="email"><label>Password</label><input class="field" type="password">${go('aedit')}Log in</button>`,
+aedit:()=>{const d=S.draft;return `<div class="h">University A: profile</div><label>Tuition per year (EGP)</label><input class="field" type="number" data-in="afee" value="${d.fee}"><label>Minimum grade (%)</label><input class="field" type="number" min="0" max="100" data-in="amin" value="${d.min}"><label>Majors offered (pick from the list)</label><div class="chips">${MAJORS.map(m=>`<button class="chip ${d.majors.includes(m)?'on':''}" data-amaj="${m}">${m}</button>`).join('')}</div>${go('areview')}Save changes</button>`},
+areview:()=>{const o=U[0],d=S.draft,add=d.majors.filter(m=>!o.majors.includes(m)),rem=o.majors.filter(m=>!d.majors.includes(m));
+ const row=(l,a,b)=>`<div class="kv"><span>${l}</span><span>${a===b?'No change':a+' to '+b}</span></div>`;
+ return `<div class="h">Review changes</div>${row('Tuition',fmt(o.fee),fmt(d.fee))}${row('Entry grade',o.min+'%',d.min+'%')}<div class="kv"><span>Majors added</span><span>${add.join(', ')||'None'}</span></div><div class="kv"><span>Majors removed</span><span>${rem.join(', ')||'None'}</span></div><div class="pick"><span class="tag">Used by the AI</span><div class="sub">Students will see these figures in their matches and recommendations.</div></div><button class="btn on push" data-act="publish">Publish update</button>`},
+adone:()=>`<div class="h" style="margin-top:30px">Update published</div><p><span class="ok">Done.</span> University A data is live.</p><p class="sub">Open the student side and run the flow again to see the change in the matches.</p>${go('adash','')}Open dashboard</button><button class="btn on" data-mode="student">Try it as a student</button>`,
+adash:()=>{const b=(n,w)=>`<div class="bars"><span>${n}</span><i style="width:${w}%"></i></div>`;
+ return `<div class="h">University A: dashboard</div><div class="kv"><span>Students matched</span><span>128 (sample)</span></div><div class="kv"><span>Chosen as best match</span><span>41 (sample)</span></div><div class="sub" style="margin-top:6px">Majors students asked for (sample)</div>${b('Computer Science',80)}${b('Business Administration',55)}${b('Computer Engineering',30)}${go('aedit','')}Edit university data</button>`}
+};
+function showMenu(){
+ const m=$('menu');if(!m)return;
+ const q=S.major.trim().toLowerCase();
+ const hit=q?MAJORS.filter(x=>x.toLowerCase().includes(q)):[];
+ const exact=hit.length===1&&hit[0].toLowerCase()===q;
+ m.innerHTML=(hit.length&&!exact)?hit.slice(0,4).map(x=>`<button data-pick="${x}">${x}</button>`).join('')+'<small>Suggestions from the universities\' major lists</small>':(q&&!hit.length?'<small>No suggestions. Try another word.</small>':'');
+}
+function render(){
+ const list=S.mode==='student'?ST:AD,pre=S.mode==='student'?'':'A';
+ $('tabs').innerHTML=[['student','Student side'],['admin','University admin side']].map(([m,l])=>`<button class="tab ${S.mode===m?'on':''}" data-mode="${m}">${l}</button>`).join('');
+ $('steps').innerHTML=list.map(([k,l],i)=>`<button class="step ${S.screen===k?'on':''}" data-go="${k}"><b>${pre}${i+1}</b>${l}</button>`).join('');
+ $('url').textContent='unirecommender.example/'+S.screen.replace(/^a(?=[a-z]{4})/,'admin/');
+ $('scr').innerHTML=V[S.screen]();
+ showMenu();
+}
+document.addEventListener('click',e=>{
+ const t=e.target.closest('[data-mode],[data-go],[data-pick],[data-type],[data-uni],[data-amaj],[data-act]');
+ if(!t)return;const d=t.dataset;
+ if(d.mode){S.mode=d.mode;S.screen=d.mode==='student'?'landing':'alogin';render()}
+ else if(d.go){S.screen=d.go;S.applied=false;render()}
+ else if(d.pick){S.major=d.pick;document.querySelector('[data-in=major]').value=d.pick;showMenu()}
+ else if(d.type){S.types[d.type]=!S.types[d.type];t.classList.toggle('on')}
+ else if(d.uni){S.top=d.uni;S.screen='detail';render()}
+ else if(d.amaj){const a=S.draft.majors,i=a.indexOf(d.amaj);i<0?a.push(d.amaj):a.splice(i,1);t.classList.toggle('on')}
+ else if(d.act==='upload'){S.up=!S.up;render()}
+ else if(d.act==='apply'){S.applied=true;render()}
+ else if(d.act==='publish'){Object.assign(U[0],{fee:+S.draft.fee||0,min:+S.draft.min||0,majors:[...S.draft.majors]});S.screen='adone';render()}
+});
+document.addEventListener('input',e=>{
+ const k=e.target.dataset.in;if(!k)return;const v=e.target.value;
+ if(k==='grade')S.grade=Math.max(0,Math.min(100,+v||0));
+ else if(k==='major'){S.major=v;showMenu()}
+ else if(k==='km'){S.km=+v;$('kmv').textContent=v+' km'}
+ else if(k==='fee'){S.fee=+v;$('feev').textContent=fmt(v)}
+ else if(k==='afee')S.draft.fee=+v;
+ else if(k==='amin')S.draft.min=+v;
+});
+render();
+</script>
+</body>
+</html>
